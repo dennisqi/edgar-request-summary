@@ -2,20 +2,20 @@ import unittest
 from datetime import datetime
 from context import EDGARAnalytics
 
+TIMEOUT_INPUT_FILE = '../input/inactivity_period.txt'
+OUTPUT_FILE = '../output/sessionization.txt'
+
 
 class TestEDGARAnalytics(unittest.TestCase):
 
     def test_timeout_iput_file(self):
-        timeout_iput_file = '../input/somefile.txt'
-        self.assertRaises(AssertionError, EDGARAnalytics, timeout_iput_file)
+        self.assertRaises(AssertionError, EDGARAnalytics, TIMEOUT_INPUT_FILE)
 
-        timeout_iput_file = '../input/inactivity_period.txt'
-        edgar_analytics = EDGARAnalytics(timeout_iput_file)
+        edgar_analytics = EDGARAnalytics(TIMEOUT_INPUT_FILE, OUTPUT_FILE)
         self.assertEqual(edgar_analytics.timeout, 2)
 
     def test_read_lines(self):
-        timeout_iput_file = '../input/inactivity_period.txt'
-        edgar_analytics = EDGARAnalytics(timeout_iput_file)
+        edgar_analytics = EDGARAnalytics(TIMEOUT_INPUT_FILE, OUTPUT_FILE)
 
         first_line = '101.81.133.jja,2017-06-30,00:00:00,0.0,1608552.0,0001047469-17-004337,-index.htm,200.0,80251.0,1.0,0.0,0.0,9.0,0.0,\n'
         input_file = '../input/log.csv'
@@ -27,8 +27,7 @@ class TestEDGARAnalytics(unittest.TestCase):
         self.assertEqual(read_lines_second_line, first_line)
 
     def test_split_line(self):
-        timeout_iput_file = '../input/inactivity_period.txt'
-        edgar_analytics = EDGARAnalytics(timeout_iput_file)
+        edgar_analytics = EDGARAnalytics(TIMEOUT_INPUT_FILE, OUTPUT_FILE)
         sample_line = '107.23.85.jfd,2017-06-30,00:00:00,0.0,1027281.0,0000898430-02-001167,-index.htm,200.0,2825.0,1.0,0.0,0.0,10.0,0.0,\n'
         pattern = {
             'ip': 0,
@@ -50,8 +49,7 @@ class TestEDGARAnalytics(unittest.TestCase):
         self.assertEqual(splited_line, expected_splited_line)
 
     def test_get_timeouted_datetimes(self):
-        timeout_iput_file = '../input/inactivity_period.txt'
-        edgar_analytics = EDGARAnalytics(timeout_iput_file)
+        edgar_analytics = EDGARAnalytics(TIMEOUT_INPUT_FILE, OUTPUT_FILE)
         record_datetime = datetime(2019, 1, 1, 0, 0, 1)
         timeouted_datetimes = edgar_analytics.get_timeouted_datetimes(record_datetime)
         self.assertEqual(timeouted_datetimes, [])
