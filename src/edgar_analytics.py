@@ -67,18 +67,16 @@ class EDGARAnalytics:
             record = records[ip]
             start_datetime = self.start_datetime[ip]
             end_datetime = timeouted_datetime
-            line = ''
-            line += ip
-            line += ','
-            line += datetime.strftime(start_datetime, '%Y-%m-%d %H:%M:%S')
-            line += ','
-            line += datetime.strftime(end_datetime, '%Y-%m-%d %H:%M:%S')
-            line += ','
-            duration = end_datetime - start_datetime
-            line += str(int(duration.total_seconds()) + 1)
-            line += ','
-            line += str(record['count'])
+            output_line = [
+                ip,
+                datetime.strftime(start_datetime, '%Y-%m-%d %H:%M:%S'),
+                datetime.strftime(end_datetime, '%Y-%m-%d %H:%M:%S'),
+                str(int((end_datetime - start_datetime).total_seconds()) + 1)
+                str(record['count'])
+            ]
+            line = ','.join(output_line)
             line += '\n'
+
             yield line
             del self.start_datetime[ip]
             del self.ip_latest_datetime[ip]
