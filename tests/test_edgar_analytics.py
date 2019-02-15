@@ -9,8 +9,6 @@ OUTPUT_FILE = '../output/sessionization.txt'
 class TestEDGARAnalytics(unittest.TestCase):
 
     def test_timeout_iput_file(self):
-        self.assertRaises(AssertionError, EDGARAnalytics, TIMEOUT_INPUT_FILE)
-
         edgar_analytics = EDGARAnalytics(TIMEOUT_INPUT_FILE, OUTPUT_FILE)
         self.assertEqual(edgar_analytics.timeout, 2)
 
