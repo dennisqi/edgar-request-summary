@@ -71,7 +71,7 @@ class EDGARAnalytics:
                 ip,
                 datetime.strftime(start_datetime, '%Y-%m-%d %H:%M:%S'),
                 datetime.strftime(end_datetime, '%Y-%m-%d %H:%M:%S'),
-                str(int((end_datetime - start_datetime).total_seconds()) + 1)
+                str(int((end_datetime - start_datetime).total_seconds()) + 1),
                 str(record['count'])
             ]
             line = ','.join(output_line)
@@ -119,11 +119,11 @@ class EDGARAnalytics:
             self.ip_latest_datetime[ip] = record_datetime
 
 
-
 if __name__ == '__main__':
     timeout_iput_file = '../input/inactivity_period.txt'
     input_file = '../input/log.csv'
     output_file = '../output/sessionization.txt'
+    open(output_file, 'w').close()
     sepration = ','
     pattern = {
         'ip': 0,
@@ -137,20 +137,13 @@ if __name__ == '__main__':
     for line in edgar_analytics.read_lines(input_file, header=True):
         record = edgar_analytics.split_line(line, sepration, pattern)
         record_datetime = edgar_analytics.get_record_datetime(record)
-        print(edgar_analytics.records)
-        # for k, v in edgar_analytics.records.items():
-        #     print(k, v)
-        # for k, v in edgar_analytics.start_datetime.items():
-        #     print(k, v)
         for timeouted_datetime in edgar_analytics.get_timeouted_datetimes(record_datetime):
-            # print(record_datetime, timeouted_datetime)
             for line1 in edgar_analytics.get_timeouted_records(timeouted_datetime, sepration):
                 edgar_analytics.write_timeouted_record(output_file, line1)
         edgar_analytics.add_record(record)
 
     lines = []
     for timeouted_datetime in edgar_analytics.get_timeouted_datetimes(datetime.utcnow()):
-        # print(record_datetime, timeouted_datetime)
         lines += [line for line in edgar_analytics.get_timeouted_records(timeouted_datetime, sepration)]
     for line in sorted(lines, key=lambda line: line.split(sepration)[1]):
         edgar_analytics.write_timeouted_record(output_file, line)
